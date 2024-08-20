@@ -1,0 +1,45 @@
+.no-scrollbar::-webkit-scrollbar {
+  display: none; /* Hide scrollbar for Chrome, Safari, and Opera */
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;  /* Hide scrollbar for IE and Edge */
+  scrollbar-width: none;  /* Hide scrollbar for Firefox */
+}
+video::-webkit-media-controls-fullscreen-button {
+  display: none;
+}
+
+Hide volume control
+video::-webkit-media-controls-timeline-slider,
+video::-webkit-media-controls-time-remaining-display,
+video::-webkit-media-controls-current-time-display ,
+video::-webkit-media-controls-play-button ,
+video::-webkit-media-controls-enclosure,
+video::-webkit-media-controls-fullscreen,
+video::-webkit-media-controls-outline,
+video::-webkit-media-controls-volume-slider,
+video::-webkit-media-controls-mute-button {
+  display: none;
+}
+*:focus {
+  outline: none;
+}
+/* Global CSS or in a specific CSS file */
+.scroll-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.scroll-container::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+
+.scroll-container::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+
+
+
+
