@@ -1,8 +1,55 @@
+import { useFormik } from "formik";
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import * as yup from "yup";
+import OtpScreen from "./OtpScreen";
+import { publicApi } from "./utils/api";
+
 function Signup() {
+  const [displayOtpScreen, setDisplayOtpScrren] = useState(false);
+  const { touched, handleSubmit, handleChange, values, errors } = useFormik({
+    initialValues: {
+      fullName: "",
+      userName: "",
+      email: "",
+      password: "",
+    },
+    validationSchema: yup.object({
+      fullName: yup
+        .string()
+        .min(2, "**fullname length must be atlest 2")
+        .required("**Fullname is required"),
+      userName: yup
+        .string()
+        .min(2, "**username length must be atlest 2")
+        .required("**Username is required"),
+      email: yup
+        .string()
+        .email("**Enter valid email")
+        .required("**Email is required"),
+      password: yup
+        .string()
+        .min(8, "**password length must be atlest 8")
+        .required("**Password is required"),
+    }),
+    onSubmit: async (signUpData) => {
+      console.log(signUpData);
+      try {
+        const res = await publicApi.post("/auth/sign-up", signUpData);
+        if (res.status == 200) {
+          console.log("sign-up");
+          setDisplayOtpScrren(true);
+        }
+      } catch (ex) {}
+    },
+  });
+  if (displayOtpScreen) {
+    return <OtpScreen email={values.email}></OtpScreen>;
+  }
   return (
     <>
-      <div className="bg-gradient-to-bl w-screen h-screen bg-[#485563]">
-        <div className="w-[500px] h-[670px] bg-[#152331] absolute mt-8 ml-[550px] rounded-xl">
+      <div className="  h-[100vh] bg-[#152331]">
+        <div className="w-[500px]  h-[600px] bg-[#152331] absolute mt-10 ml-[550px] rounded-xl">
           <div className=" w-full h-[70px] ">
             <img
               src="src/image/logo2.png"
@@ -23,17 +70,17 @@ function Signup() {
                         Already have an account?
                       </h6>
 
-                      <a
-                        href="#"
+                      <Link
+                        to={"/signin"}
                         title=""
                         class="font-semibold text-[#00bcd4] transition-all duration-200 hover:underline text-center"
                       >
                         Sign In
-                      </a>
+                      </Link>
                     </div>
                   </div>
 
-                  <form action="#" method="POST" class="mt-8">
+                  <form method="POST" onSubmit={handleSubmit} class="mt-8">
                     <div class="space-y-5 b">
                       <div className="flex flex-col space-y-4">
                         <div className="flex gap-4">
@@ -46,26 +93,37 @@ function Signup() {
                               Name
                             </label>
                             <input
-                              id="username"
                               className="h-10 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50 text-gray-400"
                               type="text"
+                              value={values.fullName}
+                              name="fullName"
                               placeholder="Enter your Name"
+                              onChange={handleChange}
                             />
+                            <p className="text-sm text-red-600 font-semibold">
+                              {errors.fullName &&
+                                touched.fullName &&
+                                errors.fullName}
+                            </p>
                           </div>
 
                           <div className="flex flex-col space-y-2 flex-1">
-                            <label
-                              htmlFor="password"
-                              className="text-base font-medium text-slate-300"
-                            >
+                            <label className="text-base font-medium text-slate-300">
                               Username
                             </label>
                             <input
-                              id="password"
                               className="h-10 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50 text-gray-400"
-                              type="password"
+                              type="text"
                               placeholder="Enter your Username"
+                              name="userName"
+                              value={values.userName}
+                              onChange={handleChange}
                             />
+                            <p className="text-sm text-red-600 font-semibold">
+                              {errors.userName &&
+                                touched.userName &&
+                                errors.userName}
+                            </p>
                           </div>
                         </div>
                       </div>
@@ -81,7 +139,13 @@ function Signup() {
                             class="flex h-10 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50 text-gray-400"
                             type="email"
                             placeholder="Email"
-                          />
+                            name="email"
+                            value={values.email}
+                            onChange={handleChange}
+                          ></input>
+                          <p className="text-sm text-red-600 font-semibold">
+                            {errors.email && touched.email && errors.email}
+                          </p>
                         </div>
                       </div>
                       <div>
@@ -98,15 +162,20 @@ function Signup() {
                             class="flex h-10 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50 text-gray-400"
                             type="password"
                             placeholder="Password"
-                          />
+                            name="password"
+                            value={values.password}
+                            onChange={handleChange}
+                          ></input>
+                          <p className="text-sm text-red-600 font-semibold">
+                            {errors.password &&
+                              touched.password &&
+                              errors.password}
+                          </p>
                         </div>
                       </div>
 
                       <div>
-                        <button
-                          type="button"
-                          class="inline-flex w-full items-center justify-center rounded-md bg-black px-3.5 py-2.5 font-semibold leading-7 text-white hover:bg-black/80"
-                        >
+                        <button class="inline-flex w-full items-center justify-center rounded-md bg-black px-3.5 py-2.5 font-semibold leading-7 text-white hover:bg-black/80">
                           Create account
                           <svg
                             xmlns="http://www.w3.org/2000/svg"

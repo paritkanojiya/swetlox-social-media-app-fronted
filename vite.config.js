@@ -7,5 +7,11 @@ export default defineConfig({
     include: ['react-player'],
   },
   plugins: [react()],
+  server: {
+    port:3000
+  },
+  define: {
+    global: "globalThis",
+  },
 })
 

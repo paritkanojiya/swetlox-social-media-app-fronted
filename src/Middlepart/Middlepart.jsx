@@ -1,41 +1,49 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../css/c.css";
+import Postbar from "./Postbar";
+import Story from "./Story";
+import Post from "./Post";
+import { privateApi } from "../utils/api";
+import Loadder from "../loadder/Loadder";
+
 function Middlepart() {
-  const [posts, setPosts] = useState([
-    {
-      id: 1,
-      username: "Parit Pandit",
-      location: "India",
-      time: "1 HOUR AGO",
-      profileImg: "src/image/p1.jpg",
-      postImg: "src/image/p2.jpg",
-      caption: "Decisions define destiny...",
-      hashtags:
-        "#inclabjindabad #independentsurat #voteforindia #jaiho #olympic2024 #losangeles #Loksabhastream",
-    },
-    {
-      id: 3,
-      username: "Parit Pandit",
-      location: "India",
-      time: "1 HOUR AGO",
-      profileImg: "src/image/p1.jpg",
-      postImg: "src/image/balcony.png",
-      caption: "Decisions define destiny...",
-      hashtags:
-        "#inclabjindabad #independentsurat #voteforindia #jaiho #olympic2024 #losangeles #Loksabhastream",
-    },
-    {
-      id: 4,
-      username: "Parit Pandit",
-      location: "India",
-      time: "1 HOUR AGO",
-      profileImg: "src/image/p1.jpg",
-      postImg: "src/image/ss.png",
-      caption: "Decisions define destiny...",
-      hashtags:
-        "#inclabjindabad #independentsurat #voteforindia #jaiho #olympic2024 #losangeles #Loksabhastream",
-    },
-  ]);
+  const [hasMore, setMore] = useState(true);
+  const [postPage, setPostPage] = useState(0);
+  const [postList, setPostList] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    console.log(hasMore, " more page have");
+    if (hasMore) {
+      const loadPost = async () => {
+        setLoading(true);
+        const { data } = await privateApi.get(`/post/load-posts/${postPage}`);
+        console.log(data);
+        setLoading(false);
+        postPage === 0
+          ? setPostList(data.content)
+          : setPostList((prev) => [...prev, ...data.content]);
+
+        setMore(!data.last);
+      };
+      loadPost();
+    }
+  }, [postPage]);
+
+  const handleScroll = () => {
+    if (
+      window.innerHeight + document.documentElement.scrollTop >=
+        document.documentElement.scrollHeight - 10 &&
+      hasMore
+    ) {
+      setPostPage((prevPage) => prevPage + 1);
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [hasMore]);
 
   return (
     <>
@@ -43,10 +51,12 @@ function Middlepart() {
         <div className="overflow-y-scroll no-scrollbar  h-[640px] rounded-t-xl">
           <Story />
           <Postbar />
-          <div>
-            {posts.map((post) => (
-              <Post key={post.id} post={post} />
-            ))}
+          <div className="w-[100%] h-fit flex justify-center items-center flex-col">
+            {loading ? (
+              <Loadder></Loadder>
+            ) : (
+              postList.map((post) => <Post key={post.id} post={post} />)
+            )}
           </div>
         </div>
       </div>
@@ -54,7 +64,3 @@ function Middlepart() {
   );
 }
 export default Middlepart;
-import Postbar from "./Postbar";
-import Story from "./Story";
-import Post from "./Post";
-

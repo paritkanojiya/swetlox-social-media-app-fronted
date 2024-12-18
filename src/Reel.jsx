@@ -1,6 +1,5 @@
-import "/src/css/c.css"
-import React, { useRef, useEffect } from 'react';
 import "/src/css/c.css";
+import React, { useRef, useEffect } from "react";
 
 const Reel = ({ reel, isPlaying }) => {
   const videoRef = useRef(null);
@@ -12,16 +11,16 @@ const Reel = ({ reel, isPlaying }) => {
       videoRef.current.pause();
     }
   }, [isPlaying]);
-
+  console.log(reel);
   return (
     <div className="relative w-full h-[630px]  flex items-center justify-center ">
       <video
         ref={videoRef}
-        src={reel.videoUrl}
+        src={reel.reelsURL}
         controls
         loop
         className="w-full h-[630px] object-cover rounded-xl"
-      />
+      ></video>
       <div className="absolute bottom-4 left-4 flex items-center space-x-3">
         <img
           src={reel.profileImg}
@@ -31,7 +30,6 @@ const Reel = ({ reel, isPlaying }) => {
         <span className="text-white font-semibold">{reel.username}</span>
       </div>
       <div className="absolute bottom-6 right-4 flex flex-row items-center space-y-4 ">
-
         <button className="text-white flex items-center space-x-1 mt-4 mr-3">
           <img src="src/image/Like.png" alt="Like" className="h-8 mt-2 ml-4" />
 
@@ -44,12 +42,9 @@ const Reel = ({ reel, isPlaying }) => {
           <i className="fa fa-comment text-2xl"></i>
           <span>{reel.comments}</span>
         </button>
-       
       </div>
     </div>
   );
 };
 
 export default Reel;
-
-

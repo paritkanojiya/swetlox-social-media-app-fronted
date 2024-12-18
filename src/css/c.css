@@ -40,6 +40,9 @@ video::-webkit-media-controls-mute-button {
 }
 
 
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
 
 
 
